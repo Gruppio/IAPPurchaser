@@ -1,7 +1,7 @@
 
 import XCTest
 import Combine
-@testable import IAP
+@testable import IAPPurchaser
 
 final class ContentPurchasedRegisterTests: XCTestCase {
     let key = "ContentPurchasedRegister.contentPurchased"

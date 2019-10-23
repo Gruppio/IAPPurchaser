@@ -10,7 +10,7 @@
 # update_fastlane
 
 default_platform(:ios)
-podspec_file = "IAP.podspec"
+podspec_file = "IAPPurchaser.podspec"
 podspec_path = "./#{podspec_file}"
 platform :ios do
 
@@ -34,6 +34,6 @@ platform :ios do
   end
 
   lane :just_release do
-    pod_push(path: podspec_file, allow_warnings: true)
+    pod_push(allow_warnings: true)
   end
 end
