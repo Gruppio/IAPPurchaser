@@ -1,0 +1,39 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+podspec_file = "IAP.podspec"
+podspec_path = "./#{podspec_file}"
+platform :ios do
+
+  desc "Release a new version of the pod"
+  lane :bump_and_release do
+    pod_lib_lint(private: true, use_bundle_exec: false, allow_warnings: true)
+    version = version_bump_podspec(path: podspec_file, bump_type: "patch")
+    git_add(path: podspec_path)
+    git_commit(path: [podspec_path], message: "#{version} release")
+    tag_and_release()
+  end
+
+  lane :tag_and_release do
+    spec = read_podspec(path: podspec_path)
+    version = spec["version"]
+    add_git_tag(
+  		tag: "#{version}"
+	)
+    push_to_git_remote
+    just_release()
+  end
+
+  lane :just_release do
+    pod_push(path: podspec_file, allow_warnings: true)
+  end
+end
