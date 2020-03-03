@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "IAPPurchaser"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "Perform and track In App Purchases"
   s.swift_version = "5.1"
   s.description  = <<-DESC
