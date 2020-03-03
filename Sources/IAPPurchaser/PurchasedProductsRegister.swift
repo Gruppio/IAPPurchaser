@@ -22,7 +22,7 @@ open class DefaultPurchasedProductsRegister: PurchasedProductsRegister {
     public init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
         let contents = Set<String>(userDefaults.string(forKey: key)?.split(separator: Character(separator)).map { String($0) } ?? [])
-        purchasedProducts = CurrentValueSubject<Set<String>, Never>(contents)
+        purchasedProducts = CurrentValueSubject<Set<PurchasedProductIdentifier>, Never>(contents)
     }
     
     public func registerPurchasedProduct(identifier: PurchasedProductIdentifier) {
