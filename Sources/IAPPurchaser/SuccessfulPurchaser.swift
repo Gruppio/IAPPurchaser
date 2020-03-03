@@ -7,7 +7,7 @@ import StoreKit
 open class SuccessfulPurchaser: NSObject, Purchaser {
     public var purchaseDuration: TimeInterval = 2
     public let availableProducts = CurrentValueSubject<[SKProduct], Never>([])
-    public let purchasing = CurrentValueSubject<Bool, Never>(false)
+    public let isPurchasing = CurrentValueSubject<Bool, Never>(false)
     public let successfulPurchase = PassthroughSubject<String, Never>()
     public let restoredPurchase = PassthroughSubject<String, Never>()
     public let failedPurchase = PassthroughSubject<(String, Error?), Never>()
@@ -23,10 +23,10 @@ open class SuccessfulPurchaser: NSObject, Purchaser {
     }
     
     open func purchase(productIdentifier: String) {
-        purchasing.send(true)
+        isPurchasing.send(true)
         DispatchQueue.main.asyncAfter(deadline: .now() + purchaseDuration) { [weak self] in
             self?.successfulPurchase.send(productIdentifier)
-            self?.purchasing.send(false)
+            self?.isPurchasing.send(false)
         }
     }
     

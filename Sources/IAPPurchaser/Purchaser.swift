@@ -6,7 +6,7 @@ import StoreKit
 
 public protocol Purchaser: SKPaymentTransactionObserver {
     var availableProducts: CurrentValueSubject<[SKProduct], Never> { get }
-    var purchasing: CurrentValueSubject<Bool, Never> { get }
+    var isPurchasing: CurrentValueSubject<Bool, Never> { get }
     var successfulPurchase: PassthroughSubject<String, Never> { get }
     var restoredPurchase: PassthroughSubject<String, Never> { get }
     var failedPurchase: PassthroughSubject<(String, Error?), Never> { get }
@@ -26,7 +26,7 @@ public extension Purchaser {
 open class IAPPurchaser: NSObject, Purchaser {
     public static var shared: Purchaser = IAPPurchaser()
     public let availableProducts = CurrentValueSubject<[SKProduct], Never>([])
-    public let purchasing = CurrentValueSubject<Bool, Never>(false)
+    public let isPurchasing = CurrentValueSubject<Bool, Never>(false)
     public let successfulPurchase = PassthroughSubject<String, Never>()
     public let restoredPurchase = PassthroughSubject<String, Never>()
     public let failedPurchase = PassthroughSubject<(String, Error?), Never>()
@@ -52,7 +52,7 @@ open class IAPPurchaser: NSObject, Purchaser {
         let payment = SKPayment(product: product)
         //payment.applicationUsername = userId
         SKPaymentQueue.default().add(payment)
-        purchasing.send(true)
+        isPurchasing.send(true)
     }
     
     open func restorePurchases() {
@@ -79,26 +79,26 @@ extension IAPPurchaser: SKPaymentTransactionObserver {
             switch transaction.transactionState {
             case .purchased:
                 successfulPurchase.send(productIdentifier)
-                purchasing.send(false)
+                isPurchasing.send(false)
                 SKPaymentQueue.default().finishTransaction(transaction)
             case .purchasing:
-                purchasing.send(true)
+                isPurchasing.send(true)
             case .failed:
                 if let transactionError = transaction.error {
                     if (transactionError as NSError).code != SKError.paymentCancelled.rawValue {
                         failedPurchase.send((productIdentifier, transaction.error))
                     }
                 }
-                purchasing.send(false)
+                isPurchasing.send(false)
                 SKPaymentQueue.default().finishTransaction(transaction)
             case .restored:
                 restoredPurchase.send(productIdentifier)
-                purchasing.send(false)
+                isPurchasing.send(false)
                 SKPaymentQueue.default().finishTransaction(transaction)
             case .deferred: // It can take weeks for approvals
-                purchasing.send(false)
+                isPurchasing.send(false)
             @unknown default:
-                purchasing.send(false)
+                isPurchasing.send(false)
             }
         }
     }
