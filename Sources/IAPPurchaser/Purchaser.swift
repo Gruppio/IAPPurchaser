@@ -70,6 +70,10 @@ extension IAPPurchaser: SKProductsRequestDelegate {
         let products = response.products.sorted(by: { $0.price.doubleValue < $1.price.doubleValue })
         availableProducts.send(products)
     }
+  
+  public func request(_ request: SKRequest, didFailWithError error: Error) {
+    print("IAPPurchaser: product request did fail with error: \(error)")
+  }
 }
 
 extension IAPPurchaser: SKPaymentTransactionObserver {
