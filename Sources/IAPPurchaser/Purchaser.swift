@@ -30,6 +30,7 @@ open class IAPPurchaser: NSObject, Purchaser {
     public let successfulPurchase = PassthroughSubject<String, Never>()
     public let restoredPurchase = PassthroughSubject<String, Never>()
     public let failedPurchase = PassthroughSubject<(String, Error?), Never>()
+    private var productRequest: SKProductsRequest?
     
     public override init() {
         super.init()
@@ -41,9 +42,9 @@ open class IAPPurchaser: NSObject, Purchaser {
     
     open func loadProducts(productIdentifiers: [String]) {
         let productIds = Set<String>(productIdentifiers)
-        let productRequest = SKProductsRequest(productIdentifiers: productIds)
-        productRequest.delegate = self
-        productRequest.start()
+        productRequest = SKProductsRequest(productIdentifiers: productIds)
+        productRequest?.delegate = self
+        productRequest?.start()
     }
     
     open func purchase(productIdentifier: String) {
@@ -72,7 +73,7 @@ extension IAPPurchaser: SKProductsRequestDelegate {
     }
   
   public func request(_ request: SKRequest, didFailWithError error: Error) {
-    print("IAPPurchaser: product request did fail with error: \(error)")
+    print("IAPPurchaser: request did fail with error: \(error)")
   }
 }
 
