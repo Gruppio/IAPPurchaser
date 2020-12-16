@@ -1,5 +1,5 @@
 
-#if canImport(StoreKit) && DEBUG
+#if canImport(StoreKit)
 import Foundation
 import Combine
 
